@@ -23,7 +23,7 @@ import torch
 def read_data(dataset, idx, is_train=True):
     if is_train:
         # train_data_dir = os.path.join('../dataset', dataset, 'train/') # bash
-        train_data_dir = os.path.join('/home/tianzhen/PFLlib-master/dataset', dataset, 'train/') # debug
+        train_data_dir = os.path.join('/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/dataset', dataset, 'train/') # debug
         train_file = train_data_dir + str(idx) + '.npz'
         with open(train_file, 'rb') as f:
             train_data = np.load(f, allow_pickle=True)['data'].tolist()
@@ -32,7 +32,7 @@ def read_data(dataset, idx, is_train=True):
 
     else:
         # test_data_dir = os.path.join('../dataset', dataset, 'test/')# bash
-        test_data_dir = os.path.join('/home/tianzhen/PFLlib-master/dataset', dataset, 'test/')# debug
+        test_data_dir = os.path.join('/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/dataset', dataset, 'test/')# debug
         test_file = test_data_dir + str(idx) + '.npz'
         with open(test_file, 'rb') as f:
             test_data = np.load(f, allow_pickle=True)['data'].tolist()

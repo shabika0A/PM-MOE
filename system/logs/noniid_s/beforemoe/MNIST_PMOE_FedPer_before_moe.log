@@ -1,0 +1,440 @@
+==================================================
+Algorithm: PMOE_FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: MNIST
+Number of classes: 10
+Backbone: cnn
+Using device: cuda
+Using DP: False
+Auto break: False
+Global rounds: 3
+Cuda device id: 0
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(1, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1024, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Averaged Train Loss: 2.3126
+Averaged Test Accurancy: 0.0589
+Averaged Test AUC: 0.4337
+Std Test Accurancy: 0.0514
+Std Test AUC: 0.1352
+File path: ../results/MNIST_PMOE_FedPer_test_0.h5
+client 17 saved
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 464, in run
+    server.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 151, in train
+    client.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientper.py", line 106, in train
+    loss.backward()
+  File "/usr/local/lib/python3.12/dist-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/usr/local/lib/python3.12/dist-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/usr/local/lib/python3.12/dist-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Trying to backward through the graph a second time (or directly access saved tensors after they have already been freed). Saved intermediate values of the graph are freed when you call .backward() or autograd.grad(). Specify retain_graph=True if you need to backward through the graph a second time or if you need to access saved tensors after calling backward.
+==================================================
+Algorithm: PMOE_FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: MNIST
+Number of classes: 10
+Backbone: cnn
+Using device: cuda
+Using DP: False
+Auto break: False
+Global rounds: 3
+Cuda device id: 0
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(1, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1024, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Averaged Train Loss: 2.3126
+Averaged Test Accurancy: 0.0589
+Averaged Test AUC: 0.4337
+Std Test Accurancy: 0.0514
+Std Test AUC: 0.1352
+File path: ../results/MNIST_PMOE_FedPer_test_0.h5
+client 15 saved
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 464, in run
+    server.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 151, in train
+    client.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientper.py", line 106, in train
+    loss.backward()
+  File "/usr/local/lib/python3.12/dist-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/usr/local/lib/python3.12/dist-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/usr/local/lib/python3.12/dist-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Trying to backward through the graph a second time (or directly access saved tensors after they have already been freed). Saved intermediate values of the graph are freed when you call .backward() or autograd.grad(). Specify retain_graph=True if you need to backward through the graph a second time or if you need to access saved tensors after calling backward.
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: PMOE_FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: MNIST
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 3
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(1, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1024, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Averaged Train Loss: 2.3126
+Averaged Test Accurancy: 0.0589
+Averaged Test AUC: 0.4337
+Std Test Accurancy: 0.0514
+Std Test AUC: 0.1352
+File path: ../results/MNIST_PMOE_FedPer_test_0.h5
+client 5 saved
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 464, in run
+    server.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 151, in train
+    client.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientper.py", line 106, in train
+    loss.backward()
+  File "/usr/local/lib/python3.12/dist-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/usr/local/lib/python3.12/dist-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/usr/local/lib/python3.12/dist-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Trying to backward through the graph a second time (or directly access saved tensors after they have already been freed). Saved intermediate values of the graph are freed when you call .backward() or autograd.grad(). Specify retain_graph=True if you need to backward through the graph a second time or if you need to access saved tensors after calling backward.
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 37, in <module>
+    from flcore.servers.serverper import FedPer, PMOE_FedPer
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 20, in <module>
+    from flcore.clients.clientper import clientPer, PMOE_clientPer
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientper.py", line 60
+    self.learning_rate_scheduler.step()
+    ^^^^
+IndentationError: expected an indented block after 'if' statement on line 59
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 37, in <module>
+    from flcore.servers.serverper import FedPer, PMOE_FedPer
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 20, in <module>
+    from flcore.clients.clientper import clientPer, PMOE_clientPer
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientper.py", line 65
+    for new_param, old_param in zip(model.parameters(), self.model.base.parameters()):
+    ^^^
+IndentationError: expected an indented block after function definition on line 64
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: PMOE_FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: MNIST
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 3
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(1, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1024, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Averaged Train Loss: 2.3126
+Averaged Test Accurancy: 0.0589
+Averaged Test AUC: 0.4337
+Std Test Accurancy: 0.0514
+Std Test AUC: 0.1352
+File path: ../results/MNIST_PMOE_FedPer_test_0.h5
+client 13 saved
+client 1 saved
+client 12 saved
+client 0 saved
+client 14 saved
+client 8 saved
+client 7 saved
+client 19 saved
+client 10 saved
+client 18 saved
+client 3 saved
+client 17 saved
+client 9 saved
+client 15 saved
+client 16 saved
+client 5 saved
+client 6 saved
+client 11 saved
+client 2 saved
+client 4 saved
+------------------------- time cost ------------------------- 118.57676219940186
+
+-------------Round number: 1-------------
+
+Evaluate personalized models
+Averaged Train Loss: 1.4876
+Averaged Test Accurancy: 0.7473
+Averaged Test AUC: 0.9443
+Std Test Accurancy: 0.1469
+Std Test AUC: 0.0384
+File path: ../results/MNIST_PMOE_FedPer_test_0.h5
+client 10 saved
+client 9 saved
+client 15 saved
+client 4 saved
+client 3 saved
+client 18 saved
+client 17 saved
+client 5 saved
+client 0 saved
+client 1 saved
+client 11 saved
+client 12 saved
+client 19 saved
+client 7 saved
+client 2 saved
+client 16 saved
+client 14 saved
+client 13 saved
+client 8 saved
+client 6 saved
+------------------------- time cost ------------------------- 115.90096545219421
+
+-------------Round number: 2-------------
+
+Evaluate personalized models
+Averaged Train Loss: 0.7191
+Averaged Test Accurancy: 0.8179
+Averaged Test AUC: 0.9754
+Std Test Accurancy: 0.0971
+Std Test AUC: 0.0192
+File path: ../results/MNIST_PMOE_FedPer_test_0.h5
+client 6 saved
+client 14 saved
+client 15 saved
+client 0 saved
+client 12 saved
+client 8 saved
+client 18 saved
+client 17 saved
+client 11 saved
+client 7 saved
+client 9 saved
+client 16 saved
+client 5 saved
+client 2 saved
+client 4 saved
+client 10 saved
+client 13 saved
+client 1 saved
+client 3 saved
+client 19 saved
+------------------------- time cost ------------------------- 108.26214647293091
+
+-------------Round number: 3-------------
+
+Evaluate personalized models
+Averaged Train Loss: 0.4041
+Averaged Test Accurancy: 0.8758
+Averaged Test AUC: 0.9871
+Std Test Accurancy: 0.0526
+Std Test AUC: 0.0080
+File path: ../results/MNIST_PMOE_FedPer_test_0.h5
+client 9 saved
+client 0 saved
+client 8 saved
+client 17 saved
+client 15 saved
+client 5 saved
+client 14 saved
+client 11 saved
+client 6 saved
+client 10 saved
+client 3 saved
+client 4 saved
+client 18 saved
+client 13 saved
+client 1 saved
+client 16 saved
+client 7 saved
+client 2 saved
+client 19 saved
+client 12 saved
+------------------------- time cost ------------------------- 111.01060366630554
+self.rs_test_acc= [0.05888736577564542, 0.7472583961617546, 0.8179118117432032, 0.8758281928261367]
+self.rs_test_auc= [np.float64(0.4336513146581418), np.float64(0.9443240717738264), np.float64(0.9753712569187493), np.float64(0.9871353649050245)]
+self.rs_train_loss= [2.3125978927390225, 1.4875781941923574, 0.7191146104055254, 0.40409058080067084]
+
+Best accuracy.
+0.8758281928261367
+
+Average time cost per round.
+111.72457186381023
+
+Average time cost: 455.97s.
+
+if the model file saved, please concern this result:
+Length:  4
+std for best accurancy: 0.0
+mean for best accurancy: 0.8758281928261367
+All done!
+
+Storage on cpu
+-------------------------------------------------------------------------------
+Total Tensors: 36080482 	Used Memory: 93.29M
+-------------------------------------------------------------------------------

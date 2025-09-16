@@ -50,7 +50,7 @@ class clientPer(Client):
                 output = self.model(x)
                 loss = self.loss(output, y)
                 self.optimizer.zero_grad()
-                loss.backward()
+                loss.backward(retain_graph=True)
                 self.optimizer.step()
 
         # self.model.cpu()
@@ -121,6 +121,70 @@ class PMOE_clientPer(Client):
         
      # after personalized finetune use moe control heads
     def moe_finetune(self):
+        # === grad preamble (auto) ===
+        import torch
+        self.model.train()
+        # freeze all, then unfreeze MoE + head
+        for p in self.model.parameters():
+            p.requires_grad = False
+        moe_names = []
+        for name, p in self.model.named_parameters():
+            if any(k in name.lower() for k in ('moe','expert','experts','gate','router','fc','classifier','head')):
+                p.requires_grad = True
+                moe_names.append(name)
+        # if nothing matched, unfreeze parameters directly under self.model.moe (if present)
+        if not moe_names and hasattr(self.model, 'moe'):
+            for name, p in self.model.moe.named_parameters():
+                p.requires_grad = True
+                moe_names.append('moe.'+name)
+        # rebuild optimizer from trainable params
+        _moe_lr = float(getattr(getattr(self, 'args', self), 'moe_lr', getattr(self, 'learning_rate', 0.005)))
+        trainable = [p for p in self.model.parameters() if p.requires_grad]
+        assert trainable, 'No trainable parameters for finetune'
+        self.optimizer = torch.optim.SGD(trainable, lr=_moe_lr, momentum=0.9)
+        # pass current client id into MoE args if available
+        try:
+            if hasattr(self.model, 'moe') and hasattr(self.model.moe, 'args'):
+                self.model.moe.args.id = int(getattr(self, 'id', 0))
+        except Exception:
+            pass
+        printed_check = False
+        # Enable grads for MoE/FC; rebuild optimizer with moe_lr
+        import torch
+        self.model.train()
+        for p in self.model.parameters():
+            p.requires_grad = False
+        for name, p in self.model.named_parameters():
+            if ('moe' in name) or ('gate' in name) or ('experts' in name) or ('fc' in name) or ('head' in name):
+                p.requires_grad = True
+        _moe_lr = float(getattr(getattr(self, 'args', self), 'moe_lr', getattr(self, 'learning_rate', 0.005)))
+        trainable = [p for p in self.model.parameters() if p.requires_grad]
+        assert trainable, 'No trainable parameters for finetune'
+        self.optimizer = torch.optim.SGD(trainable, lr=_moe_lr, momentum=0.9)
+        # Ensure MoE sees current client id
+        try:
+            if hasattr(self.model, 'moe') and hasattr(self.model.moe, 'args'):
+                self.model.moe.args.id = int(getattr(self, 'id', 0))
+        except Exception:
+            pass
+        # Enable grads for MoE/FC; rebuild optimizer with moe_lr
+        import torch
+        self.model.train()
+        for p in self.model.parameters():
+            p.requires_grad = False
+        for name, p in self.model.named_parameters():
+            if ('moe' in name) or ('gate' in name) or ('experts' in name) or ('fc' in name) or ('head' in name):
+                p.requires_grad = True
+        _moe_lr = float(getattr(getattr(self, 'args', self), 'moe_lr', getattr(self, 'learning_rate', 0.005)))
+        trainable = [p for p in self.model.parameters() if p.requires_grad]
+        assert trainable, 'No trainable parameters for finetune'
+        self.optimizer = torch.optim.SGD(trainable, lr=_moe_lr, momentum=0.9)
+        # Ensure MoE sees current client id
+        try:
+            if hasattr(self.model, 'moe') and hasattr(self.model.moe, 'args'):
+                self.model.moe.args.id = int(getattr(self, 'id', 0))
+        except Exception:
+            pass
         trainloader = self.load_train_data()
         start_time = time.time()
         
@@ -160,9 +224,35 @@ class PMOE_clientPer(Client):
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
                 rep = self.model.base(x)
+                                # ensure MoE knows the current client id
+                try:
+                    if hasattr(self.model, 'moe') and hasattr(self.model.moe, 'args'):
+                        self.model.moe.args.id = int(getattr(self, 'id', 0))
+                except Exception:
+                    pass
                 output = self.model.moe(rep)
                 loss = self.loss(output, y)
                 self.moe_opt.zero_grad()
+                assert hasattr(loss, 'backward') and getattr(loss, 'requires_grad', False), 'loss must be a Tensor with grad'
+
+                assert hasattr(loss, 'backward') and getattr(loss, 'requires_grad', False), 'loss must be a Tensor with grad'
+
+                # === grad sanity (auto) ===
+
+                if not printed_check:
+
+                    req = getattr(loss, 'requires_grad', None)
+
+                    any_trainable = any(p.requires_grad for p in self.model.parameters())
+
+                    any_moe = any(p.requires_grad for n,p in self.model.named_parameters() if 'moe' in n.lower() or 'expert' in n.lower())
+
+                    print('DBG finetune:', 'loss.req', req, 'any_trainable', any_trainable, 'any_moe', any_moe, 'n_trn', sum(int(p.requires_grad) for p in self.model.parameters()))
+
+                    printed_check = True
+
+                assert getattr(loss, 'requires_grad', False), 'loss must be a Tensor with grad'
+
                 loss.backward()
                 self.moe_opt.step()
                 
