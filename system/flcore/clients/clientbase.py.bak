@@ -105,7 +105,7 @@ class Client(object):
         model_path = os.path.join("models", self.dataset)
         model_path = os.path.join(model_path, self.algorithm + "_client_" + str(self.id) + ".pt")
         assert (os.path.exists(model_path))
-        self.model = torch.load(model_path, map_location='cpu')
+        self.model = torch.load(model_path)
 
     def model_exists(self):
         model_path = os.path.join("models", self.dataset)
@@ -210,7 +210,7 @@ class Client(object):
     def load_item(self, item_name, item_path=None):
         if item_path == None:
             item_path = self.save_folder_name
-        return torch.load(os.path.join(item_path, "client_" + str(self.id) + "_" + item_name + ".pt"), map_location='cpu')
+        return torch.load(os.path.join(item_path, "client_" + str(self.id) + "_" + item_name + ".pt"))
 
     # @staticmethod
     # def model_exists():

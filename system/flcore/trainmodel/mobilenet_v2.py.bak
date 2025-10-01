@@ -208,5 +208,5 @@ def mobilenet_v2(pretrained=False, progress=True, **kwargs):
             else:
                 new_dict[k.replace('classifier.1', 'fc')] = v
                 
-        model.load_state_dict(new_dict, strict=False)
+        model.load_state_dict(new_dict)
     return model

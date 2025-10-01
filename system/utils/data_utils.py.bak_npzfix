@@ -12,63 +12,67 @@ def _pick_key(available, candidates):
             return k
     return None
 
-def _resolve_npz_path(dataset: str, idx: int, is_train: bool):
+def _resolve_npz_path(dataset, idx, is_train):
     """
-    Resolve a per-client .npz path. Accept both non-padded and zero-padded ids:
-      - train/client_0.npz, test/client_0.npz
-      - train/client_000.npz, test/client_000.npz
-    Also tries a few legacy patterns and glob fallbacks.
+    Robust resolver: search recursively for a file that matches the client idx and split.
+    Works with many filename styles:
+      - {dataset}_client_{idx}_{split}.npz
+      - client_{idx}_{split}.npz
+      - {split}/client_{idx}.npz
+      - user_{idx}_{split}.npz
+      - {split}/{idx}.npz
+      - generic shards like *{split}*{idx}*.npz or *client*{idx}*{split}*.npz
     """
-    from pathlib import Path
-    split = "train" if is_train else "test"
-    # repo_root/system/utils/data_utils.py -> repo_root
-    repo_root = Path(__file__).resolve().parents[2]
-    ds_root = repo_root / "dataset" / dataset.upper()
+    split = 'train' if is_train else 'test'
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'dataset', dataset))
 
-    # Preferred explicit candidates (non-padded & 3-digit padded)
-    candidates = [
-        ds_root / split / f"client_{idx}.npz",
-        ds_root / split / f"client_{idx:03d}.npz",
-        ds_root / f"{dataset}_client_{idx}_{split}.npz",
-        ds_root / f"client_{idx}_{split}.npz",
-        ds_root / f"user_{idx}_{split}.npz",
-        ds_root / f"{split}_{dataset}_client_{idx}.npz",
-        ds_root / f"{split}_{idx}.npz",
-        ds_root / split / f"{idx}.npz",
-    ]
-    for p in candidates:
-        if p.exists():
-            return p
-
-    # Glob fallbacks (padded and non-padded)
-    globs = [
-        f"{split}/client_{idx:03d}.npz",
-        f"{split}/client_{idx:02d}.npz",
-        f"{split}/client_{idx:01d}.npz",
-        f"*client*{idx:03d}*{split}*.npz",
-        f"*client*{idx}*{split}*.npz",
-        f"*{split}*client*{idx:03d}*.npz",
-        f"*{split}*client*{idx}*.npz",
-        f"*{split}*{idx}*.npz",
-    ]
-    for pat in globs:
-        hits = sorted(ds_root.rglob(pat))
-        if hits:
-            return hits[0]
-
-    available = [str(p) for p in sorted(ds_root.rglob("*.npz"))]
+    # Priority patterns (more specific first)
     patterns = [
-        f"CIFAR10_client_{idx}_train.npz","client_{idx}_train.npz","train/client_{idx}.npz",
-        "client_{idx:03d}.npz under train/ or test/","user_{idx}_train.npz","train/user_{idx}.npz",
-        f"train_CIFAR10_client_{idx}.npz",f"train_{idx}.npz",f"train/{idx}.npz",
-        f"*client*{idx}*train*.npz",f"*train*client*{idx}*.npz",f"*user*{idx}*train*.npz",f"*train*{idx}*.npz",
+        f"{dataset}_client_{idx}_{split}.npz",
+        f"client_{idx}_{split}.npz",
+        os.path.join(split, f"client_{idx}.npz"),
+        f"user_{idx}_{split}.npz",
+        os.path.join(split, f"user_{idx}.npz"),
+        f"{split}_{dataset}_client_{idx}.npz",
+        f"{split}_{idx}.npz",
+        os.path.join(split, f"{idx}.npz"),
+        # Generic fallbacks
+        f"*client*{idx}*{split}*.npz",
+        f"*{split}*client*{idx}*.npz",
+        f"*user*{idx}*{split}*.npz",
+        f"*{split}*{idx}*.npz",
+        f"*{idx}*{split}*.npz",
     ]
-    raise FileNotFoundError(
-        f"NPZ missing for dataset={dataset}, idx={idx}, split={split}.\n"
-        f"Searched under: {ds_root}\n"
-        f"Patterns tried: {patterns}\n"
-        f"Found NPZ files: {available}"
-    )
+
+    matches = []
+    for pat in patterns:
+        g = glob.glob(os.path.join(base_dir, "**", pat), recursive=True)
+        if g:
+            matches.extend(g)
+
+    if not matches:
+        # Show the caller what exists to help debug
+        all_npz = glob.glob(os.path.join(base_dir, "**", "*.npz"), recursive=True)
+        raise FileNotFoundError(
+            f"NPZ missing for dataset={dataset}, idx={idx}, split={split}.\n"
+            f"Searched under: {base_dir}\n"
+            f"Patterns tried: {patterns}\n"
+            f"Found NPZ files: {all_npz[:50]}{' ... (truncated)' if len(all_npz) > 50 else ''}"
+        )
+
+    # Prefer paths that explicitly include 'client_{idx}' or '{split}' and are shortest
+    def _score(p):
+        name = p.replace(os.sep, '/').lower()
+        s = 0
+        if f"client_{idx}" in name: s -= 10
+        if f"user_{idx}" in name:   s -= 9
+        if f"/{split}/" in name or name.endswith(f"_{split}.npz"): s -= 5
+        s += len(name)  # shorter is better
+        return s
+
+    matches.sort(key=_score)
+    return matches[0]
+
 def read_data(dataset, idx, is_train):
     """
     Robust NPZ reader:

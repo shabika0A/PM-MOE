@@ -224,7 +224,7 @@ class Server(object):
         torch.save(item, os.path.join(self.save_folder_name, "server_" + item_name + ".pt"))
 
     def load_item(self, item_name):
-        return torch.load(os.path.join(self.save_folder_name, "server_" + item_name + ".pt", weights_only=False, map_location='cpu'))
+        return torch.load(os.path.join(self.save_folder_name, "server_" + item_name + ".pt", weights_only=False, map_location='cpu'), map_location='cpu')
 
     def test_metrics(self):
         if self.eval_new_clients and self.num_new_clients > 0:

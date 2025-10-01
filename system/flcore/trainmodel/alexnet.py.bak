@@ -86,5 +86,5 @@ def alexnet(pretrained=False, progress=True, **kwargs):
             else:
                 new_dict[k.replace('classifier.6', 'fc')] = v
 
-        model.load_state_dict(new_dict, strict=False)
+        model.load_state_dict(new_dict)
     return model

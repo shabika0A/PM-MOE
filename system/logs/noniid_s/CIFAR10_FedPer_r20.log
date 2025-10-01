@@ -1,0 +1,784 @@
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 276, in run
+    server = FedPer(args, i)
+             ^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 31, in __init__
+    self.set_clients(clientPer)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 84, in set_clients
+    train_data = read_client_data(self.dataset, i, is_train=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 50, in read_client_data
+    train_data = read_data(dataset, idx, is_train)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 29, in read_data
+    train_data = np.load(f, allow_pickle=True)['data'].tolist()
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/numpy/lib/_npyio_impl.py", line 263, in __getitem__
+    raise KeyError(f"{key} is not a file in the archive")
+KeyError: 'data is not a file in the archive'
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 276, in run
+    server = FedPer(args, i)
+             ^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 31, in __init__
+    self.set_clients(clientPer)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 84, in set_clients
+    train_data = read_client_data(self.dataset, i, is_train=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 50, in read_client_data
+    train_data = read_data(dataset, idx, is_train)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 29, in read_data
+    train_data = np.load(f, allow_pickle=True)['data'].tolist()
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/numpy/lib/_npyio_impl.py", line 263, in __getitem__
+    raise KeyError(f"{key} is not a file in the archive")
+KeyError: 'data is not a file in the archive'
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 276, in run
+    server = FedPer(args, i)
+             ^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 31, in __init__
+    self.set_clients(clientPer)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 84, in set_clients
+    train_data = read_client_data(self.dataset, i, is_train=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 50, in read_client_data
+    train_data = read_data(dataset, idx, is_train)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 29, in read_data
+    train_data = np.load(f, allow_pickle=True)['data'].tolist()
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/numpy/lib/_npyio_impl.py", line 263, in __getitem__
+    raise KeyError(f"{key} is not a file in the archive")
+KeyError: 'data is not a file in the archive'
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 276, in run
+    server = FedPer(args, i)
+             ^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 31, in __init__
+    self.set_clients(clientPer)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 84, in set_clients
+    train_data = read_client_data(self.dataset, i, is_train=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 50, in read_client_data
+    train_data = read_data(dataset, idx, is_train)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 29, in read_data
+    train_data = np.load(f, allow_pickle=True)['data'].tolist()
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/numpy/lib/_npyio_impl.py", line 263, in __getitem__
+    raise KeyError(f"{key} is not a file in the archive")
+KeyError: 'data is not a file in the archive'
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 276, in run
+    server = FedPer(args, i)
+             ^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 31, in __init__
+    self.set_clients(clientPer)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 84, in set_clients
+    train_data = read_client_data(self.dataset, i, is_train=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 40, in read_client_data
+    out = read_data(dataset, idx, is_train)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 24, in read_data
+    raise FileNotFoundError(f"NPZ missing for dataset={dataset}, idx={idx}, split={split}. Tried: {candidate_files}")
+FileNotFoundError: NPZ missing for dataset=CIFAR10, idx=0, split=train. Tried: ['/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/../../dataset/CIFAR10/CIFAR10_client_0_train.npz', '/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/../../dataset/CIFAR10/client_0_train.npz', '/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/../../dataset/CIFAR10/train/client_0.npz', '/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/../../dataset/CIFAR10/user_0_train.npz', '/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/../../dataset/CIFAR10/train/user_0.npz']
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 464, in run
+    server.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 50, in train
+    self.evaluate()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 264, in evaluate
+    stats = self.test_metrics()
+            ^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 238, in test_metrics
+    ct, ns, auc = c.test_metrics()
+                  ^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientbase.py", line 131, in test_metrics
+    for x, y in testloaderfull:
+                ^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/utils/data/dataloader.py", line 734, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/utils/data/dataloader.py", line 790, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+KeyError: 0
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 276, in run
+    server = FedPer(args, i)
+             ^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 31, in __init__
+    self.set_clients(clientPer)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 84, in set_clients
+    train_data = read_client_data(self.dataset, i, is_train=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/utils/data_utils.py", line 7, in read_client_data
+    out = read_data(dataset, idx, is_train)  # your existing resolver/reader
+          ^^^^^^^^^
+NameError: name 'read_data' is not defined
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 464, in run
+    server.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 50, in train
+    self.evaluate()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 264, in evaluate
+    stats = self.test_metrics()
+            ^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 238, in test_metrics
+    ct, ns, auc = c.test_metrics()
+                  ^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientbase.py", line 133, in test_metrics
+    x[0] = x[0].to(self.device)
+           ^^^^^^^
+AttributeError: 'list' object has no attribute 'to'
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 464, in run
+    server.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 50, in train
+    self.evaluate()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 264, in evaluate
+    stats = self.test_metrics()
+            ^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 238, in test_metrics
+    ct, ns, auc = c.test_metrics()
+                  ^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientbase.py", line 137, in test_metrics
+    output = self.model(x)
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/models.py", line 33, in forward
+    out = self.base(x)
+          ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/models.py", line 211, in forward
+    out = self.conv1(x)  # ([10, 32, 12, 12])
+          ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/container.py", line 244, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/conv.py", line 548, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/conv.py", line 543, in _conv_forward
+    return F.conv2d(
+           ^^^^^^^^^
+TypeError: conv2d() received an invalid combination of arguments - got (list, Parameter, Parameter, tuple, tuple, tuple, int), but expected one of:
+ * (Tensor input, Tensor weight, Tensor bias = None, tuple of ints stride = 1, tuple of ints padding = 0, tuple of ints dilation = 1, int groups = 1)
+      didn't match because some of the arguments have invalid types: (!list of [Tensor]!, !Parameter!, !Parameter!, !tuple of (int, int)!, !tuple of (int, int)!, !tuple of (int, int)!, !int!)
+ * (Tensor input, Tensor weight, Tensor bias = None, tuple of ints stride = 1, str padding = "valid", tuple of ints dilation = 1, int groups = 1)
+      didn't match because some of the arguments have invalid types: (!list of [Tensor]!, !Parameter!, !Parameter!, !tuple of (int, int)!, !tuple of (int, int)!, !tuple of (int, int)!, !int!)
+
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 10
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 20
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=10816, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 638, in <module>
+    run(args)
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 464, in run
+    server.train()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 50, in train
+    self.evaluate()
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 264, in evaluate
+    stats = self.test_metrics()
+            ^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverbase.py", line 238, in test_metrics
+    ct, ns, auc = c.test_metrics()
+                  ^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientbase.py", line 137, in test_metrics
+    output = self.model(x)
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/models.py", line 33, in forward
+    out = self.base(x)
+          ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/models.py", line 214, in forward
+    out = self.fc1(out)  # ([10, 512])
+          ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/container.py", line 244, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (10x1600 and 10816x512)
+/usr/bin/python3: can't open file '/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/main.py': [Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 37, in <module>
+    from flcore.servers.serverper import FedPer, PMOE_FedPer
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 20, in <module>
+    from flcore.clients.clientper import clientPer, PMOE_clientPer
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientper.py", line 21, in <module>
+    from flcore.trainmodel.moe.moe import ToPMoE
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/moe/moe.py", line 5, in <module>
+    from flcore.trainmodel.models import fastText
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/models.py", line 204
+    \1, 
+     ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/main.py", line 37, in <module>
+    from flcore.servers.serverper import FedPer, PMOE_FedPer
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/servers/serverper.py", line 20, in <module>
+    from flcore.clients.clientper import clientPer, PMOE_clientPer
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/clients/clientper.py", line 21, in <module>
+    from flcore.trainmodel.moe.moe import ToPMoE
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/moe/moe.py", line 5, in <module>
+    from flcore.trainmodel.models import fastText
+  File "/content/drive/MyDrive/Colab Notebooks/uni-project/PM-MOE-clean/system/flcore/trainmodel/models.py", line 204
+    \1, 
+     ^
+SyntaxError: unexpected character after line continuation character

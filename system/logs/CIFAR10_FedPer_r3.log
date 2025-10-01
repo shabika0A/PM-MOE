@@ -1,0 +1,106 @@
+
+cuda is not avaiable.
+
+==================================================
+Algorithm: FedPer
+Local batch size: 10
+Local epochs: 1
+Local learing rate: 0.005
+Local learing rate decay: False
+Total number of clients: 20
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: CIFAR10
+Number of classes: 64
+Backbone: cnn
+Using device: cpu
+Using DP: False
+Auto break: False
+Global rounds: 3
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 0
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Linear(in_features=1600, out_features=512, bias=True)
+  (fc): Linear(in_features=512, out_features=64, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 20
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate personalized models
+Averaged Train Loss: 4.1790
+Averaged Test Accurancy: 0.0004
+Averaged Test AUC: 0.3390
+Std Test Accurancy: 0.0008
+Std Test AUC: 0.0197
+------------------------- time cost ------------------------- 253.1314880847931
+
+-------------Round number: 1-------------
+
+Evaluate personalized models
+Averaged Train Loss: 2.1513
+Averaged Test Accurancy: 0.1186
+Averaged Test AUC: 0.9326
+Std Test Accurancy: 0.0277
+Std Test AUC: 0.0038
+------------------------- time cost ------------------------- 254.23918628692627
+
+-------------Round number: 2-------------
+
+Evaluate personalized models
+Averaged Train Loss: 1.7776
+Averaged Test Accurancy: 0.1438
+Averaged Test AUC: 0.9343
+Std Test Accurancy: 0.0376
+Std Test AUC: 0.0036
+------------------------- time cost ------------------------- 244.07814693450928
+
+-------------Round number: 3-------------
+
+Evaluate personalized models
+Averaged Train Loss: 1.6382
+Averaged Test Accurancy: 0.1571
+Averaged Test AUC: 0.9367
+Std Test Accurancy: 0.0357
+Std Test AUC: 0.0033
+------------------------- time cost ------------------------- 249.22556352615356
+
+Best accuracy.
+0.1571
+
+Average time cost per round.
+249.1809655825297
+File path: ../results/CIFAR10_FedPer_test_0.h5
+
+Average time cost: 1023.56s.
+
+if the model file saved, please concern this result:
+Length:  4
+std for best accurancy: 0.0
+mean for best accurancy: 0.1571
+All done!
+
+Storage on cpu
+-------------------------------------------------------------------------------
+Total Tensors: 56154048 	Used Memory: 145.11M
+-------------------------------------------------------------------------------

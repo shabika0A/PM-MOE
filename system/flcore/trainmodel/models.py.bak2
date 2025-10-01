@@ -201,13 +201,9 @@ class FedAvgCNN(nn.Module):
             nn.ReLU(inplace=True), 
             nn.MaxPool2d(kernel_size=(2, 2))
         )
-        # infer flattened feature dim for fc1 (robust across input sizes)
-        with torch.no_grad():
-            _dummy = torch.zeros(1, 3, 32, 32)  # CIFAR-10 shape; safe on CPU
-            _feat  = self.conv2(self.conv1(_dummy))
-            _flat  = torch.flatten(_feat, 1)
-            _in_dim = _flat.shape[1]
-        self.fc1 = nn.Linear(_in_dim, 512)
+        \1, 
+            nn.ReLU(inplace=True)
+        )
         self.fc = nn.Linear(512, num_classes)
 
     def forward(self, x): # x.shape = ([10, 1, 28, 28])
@@ -257,6 +253,9 @@ class FedAvgMLPMOE(nn.Module):
                         bias=True),
             nn.ReLU(inplace=True), 
             nn.MaxPool2d(kernel_size=(2, 2))
+        )
+        \1, 
+            nn.ReLU(inplace=True)
         )
         self.fc = nn.Linear(512, num_classes)
 
@@ -323,6 +322,9 @@ class FedAvgCNNMOE(nn.Module):
         # else:
         #     raise NotImplementedError("CNNMOE for {} Not Implemented".format(expert_type))
             
+        \1, 
+            nn.ReLU(inplace=True)
+        )
         self.fc = nn.Linear(128, num_classes)
 
     def forward(self, x): # x.shape = ([10, 1, 28, 28])

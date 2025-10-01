@@ -602,12 +602,3 @@ if getattr(args, "device", None) == "cuda" and not torch.cuda.is_available():
     print("cuda is not available.")
     print("=" * 50)
     args.device = "cpu"
-
-
-# === cc: fallback main guard to ensure training launches ===
-if __name__ == '__main__':
-    try:
-        run(args)  # call the existing run() using parsed args in module scope
-    except NameError:
-        import argparse
-        print('[!] args not found at module scope; please ensure parser.parse_args() executes before this block.')
