@@ -565,6 +565,8 @@ if __name__ == "__main__":
     parser.add_argument("-tk", "--topk", type=int, default=2)
     parser.add_argument("-le", "--lock_experts", type=int, default=0) # 0--lock， 1--unlock
     parser.add_argument("-moelr", "--moe_lr", type=float, default=0.1) # 
+    # Add this line within the argument parsing section
+    parser.add_argument('--ucb_c', type=float, default=1.0, help='The exploration constant for the UCB algorithm.')
     
     args = parser.parse_args()
 
