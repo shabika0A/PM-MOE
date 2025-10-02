@@ -33,7 +33,7 @@ class ToPMoE(nn.Module):
     """Top‑k MoE with optional args.topk and optional args.id (unused for syntax safety)."""
     def __init__(self, trained_experts: list[nn.Module], gate_input_dim: int, args):
         super().__init__()
-        self.experts = nn.ModuleList(trained_experts)``
+        self.experts = nn.ModuleList(trained_experts)
         # num_experts = len(trained_experts)
         self.num_experts = len(trained_experts)
         # Assuming all experts have the same input dimension
