@@ -31,7 +31,7 @@ class clientPer(Client):
         
         start_time = time.time()
 
-        # self.model.to(self.device)
+        # self.model.to('cpu')
         self.model.train()
 
         max_local_epochs = self.local_epochs
@@ -43,8 +43,8 @@ class clientPer(Client):
                 if type(x) == type([]):
                     x[0] = x[0].to(self.device)
                 else:
-                    x = x.to(self.device)
-                y = y.to(self.device)
+                    x = x.to('cpu')
+                y = y.to('cpu')
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
                 output = self.model(x)
@@ -62,7 +62,9 @@ class clientPer(Client):
         self.train_time_cost['total_cost'] += time.time() - start_time
 
     def set_parameters(self, model):
-        for new_param, old_param in zip(model.parameters(), self.model.base.parameters()):
+        for new_param, old_param in zip(model.parameters(), self.model.parameters()):
+            old_param.data = new_param.data.clone()
+            self.model.to(self.device)
             old_param.data = new_param.data.clone()
 
 
@@ -81,7 +83,7 @@ class PMOE_clientPer(Client):
         
         start_time = time.time()
 
-        # self.model.to(self.device)
+        # self.model.to('cpu')
         self.model.train()
 
         max_local_epochs = self.local_epochs
@@ -93,8 +95,8 @@ class PMOE_clientPer(Client):
                 if type(x) == type([]):
                     x[0] = x[0].to(self.device)
                 else:
-                    x = x.to(self.device)
-                y = y.to(self.device)
+                    x = x.to('cpu')
+                y = y.to('cpu')
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
                 output = self.model(x)
@@ -112,7 +114,9 @@ class PMOE_clientPer(Client):
         self.train_time_cost['total_cost'] += time.time() - start_time
 
     def set_parameters(self, model):
-        for new_param, old_param in zip(model.parameters(), self.model.base.parameters()):
+        for new_param, old_param in zip(model.parameters(), self.model.parameters()):
+            old_param.data = new_param.data.clone()
+            self.model.to(self.device)
             old_param.data = new_param.data.clone()
     
     
@@ -218,8 +222,8 @@ class PMOE_clientPer(Client):
                 if type(x) == type([]):
                     x[0] = x[0].to(self.device)
                 else:
-                    x = x.to(self.device)
-                y = y.to(self.device)
+                    x = x.to('cpu')
+                y = y.to('cpu')
                 
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
@@ -263,7 +267,7 @@ class PMOE_clientPer(Client):
     def test_metrics(self):
         testloaderfull = self.load_test_data()
         # self.model = self.load_model('model')
-        # self.model.to(self.device)
+        # self.model.to('cpu')
         self.model.eval()
 
         test_acc = 0
@@ -276,8 +280,8 @@ class PMOE_clientPer(Client):
                 if type(x) == type([]):
                     x[0] = x[0].to(self.device)
                 else:
-                    x = x.to(self.device)
-                y = y.to(self.device)
+                    x = x.to('cpu')
+                y = y.to('cpu')
                 
                 if self.is_moe_finetune == True:
                     # print("self.is_moe_finetune=", self.is_moe_finetune)
@@ -311,7 +315,7 @@ class PMOE_clientPer(Client):
     def train_metrics(self):
         trainloader = self.load_train_data()
         # self.model = self.load_model('model')
-        # self.model.to(self.device)
+        # self.model.to('cpu')
         self.model.eval()
 
         train_num = 0
@@ -321,8 +325,8 @@ class PMOE_clientPer(Client):
                 if type(x) == type([]):
                     x[0] = x[0].to(self.device)
                 else:
-                    x = x.to(self.device)
-                y = y.to(self.device)
+                    x = x.to('cpu')
+                y = y.to('cpu')
                 
                 if self.is_moe_finetune == True:
                     # print("self.is_moe_finetune=", self.is_moe_finetune)
