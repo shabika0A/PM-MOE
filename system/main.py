@@ -462,6 +462,7 @@ def run(args):
             raise NotImplementedError
 
         server.train()
+        server.save_global_model()
 
         time_list.append(time.time()-start)
 
