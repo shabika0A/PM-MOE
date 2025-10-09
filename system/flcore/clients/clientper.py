@@ -22,7 +22,10 @@ from sklearn import metrics
 from sklearn.preprocessing import label_binarize
 
 from flcore.clients.clientbase import Client
-from flcore.trainmodel.moe.moe import ToPMoE
+#gonna use UCB
+#from flcore.trainmodel.moe.moe import ToPMoE
+from flcore.trainmodel.moe.moe import ExtractorToPMoE
+
 
 
 class clientPer(Client):
@@ -133,12 +136,29 @@ class PMOE_clientPer(Client):
         self.model.train()
         self.is_moe_finetune = True
 
-        # attach MoE (top-k) head
-        self.model.moe = ToPMoE(
+        # # attach MoE (top-k) head
+        # self.model.moe = ToPMoE(
+        #     trained_experts=self.trained_experts,
+        #     gate_input_dim=self.trained_experts[0].in_features,
+        #     args=self.args,
+        # ).to(self.device)
+
+        # ######## UCB block start
+        # safety: clamp top-k to #experts
+        num_experts = len(self.trained_experts)
+        if getattr(self.args, "topk", 1) > num_experts:
+            print(f"[warn] topk={self.args.topk} > num_experts={num_experts}; clamping to {num_experts}")
+            self.args.topk = num_experts
+
+        self.model.moe = ExtractorToPMoE(
             trained_experts=self.trained_experts,
             gate_input_dim=self.trained_experts[0].in_features,
             args=self.args,
         ).to(self.device)
+
+        # track how many UCB selections we’ve made (global step proxy)
+        self._ucb_total_plays = 0
+        # ######## UCB block end
 
         # freeze base, unfreeze gate; optionally un/lock experts
         for p in self.model.parameters():
@@ -166,22 +186,49 @@ class PMOE_clientPer(Client):
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
 
-                # representation from base
+                # # representation from base
+                # rep = self.model.base(x)
+
+                # # optionally pass client id to gating (if used)
+                # try:
+                #     if hasattr(self.model, "moe") and hasattr(self.model.moe, "args"):
+                #         self.model.moe.args.id = int(getattr(self, "id", 0))
+                # except Exception:
+                #     pass
+
+                # output = self.model.moe(rep)
+                # loss = self.loss(output, y)
+
+                # self.moe_opt.zero_grad(set_to_none=True)
+                # loss.backward()
+                # self.moe_opt.step()
+                # # # # # # # UCB block start
                 rep = self.model.base(x)
+                # 1) Select experts via UCB (returns top-k indices)
+                ucb_indices = self.model.moe.get_ucb_selection(self._ucb_total_plays)
 
-                # optionally pass client id to gating (if used)
-                try:
-                    if hasattr(self.model, "moe") and hasattr(self.model.moe, "args"):
-                        self.model.moe.args.id = int(getattr(self, "id", 0))
-                except Exception:
-                    pass
-
-                output = self.model.moe(rep)
+                # 2) Forward only through selected experts
+                output = self.model.moe(rep, selected_experts_indices=ucb_indices)
                 loss = self.loss(output, y)
 
                 self.moe_opt.zero_grad(set_to_none=True)
                 loss.backward()
                 self.moe_opt.step()
+
+                # 3) Define per-expert rewards and update UCB state
+                #    Simple, stable signal: reward = 1 - normalized loss (clamped)
+                with torch.no_grad():
+                    reward_scalar = float((1.0 - loss.detach().item()))
+                    reward_scalar = max(0.0, min(1.0, reward_scalar))
+                    rewards = [reward_scalar] * len(ucb_indices)
+
+                self.model.moe.update_ucb_state(ucb_indices, rewards)
+
+                # 4) Increment UCB time step
+                self._ucb_total_plays += 1
+
+                # # # # # # # UCB block end
+
 
         self.train_time_cost["total_cost"] += time.time() - start_time
 
@@ -205,8 +252,24 @@ class PMOE_clientPer(Client):
                 y = y.to(self.device, non_blocking=True)
 
                 if self.is_moe_finetune:
+                    # rep = self.model.base(x)
+                    # output = self.model.moe(rep)
+                    # ##### ucb block start
                     rep = self.model.base(x)
-                    output = self.model.moe(rep)
+
+                    # create a stable counter if missing
+                    if not hasattr(self, "_ucb_total_plays"):
+                        self._ucb_total_plays = 0
+
+                    # 1) pick experts using UCB (deterministic here)
+                    ucb_indices = self.model.moe.get_ucb_selection(self._ucb_total_plays)
+
+                    # 2) forward ONLY through selected experts
+                    output = self.model.moe(rep, selected_experts_indices=ucb_indices)
+
+                    # 3) IMPORTANT: do NOT call update_ucb_state() in eval
+                    # ##### ucb block end
+
                 else:
                     output = self.model(x)
 
@@ -246,8 +309,17 @@ class PMOE_clientPer(Client):
                 y = y.to(self.device, non_blocking=True)
 
                 if self.is_moe_finetune:
+                    # rep = self.model.base(x)
+                    # output = self.model.moe(rep)
+                    # ##### ucb block start
                     rep = self.model.base(x)
-                    output = self.model.moe(rep)
+                    if not hasattr(self, "_ucb_total_plays"):
+                        self._ucb_total_plays = 0
+                    ucb_indices = self.model.moe.get_ucb_selection(self._ucb_total_plays)
+                    output = self.model.moe(rep, selected_experts_indices=ucb_indices)
+                    # no update_ucb_state() here either
+                    # ##### ucb block end
+
                 else:
                     output = self.model(x)
 
