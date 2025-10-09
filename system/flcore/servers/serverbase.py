@@ -200,6 +200,7 @@ class Server(object):
         assert (os.path.exists(model_path))
         with open(model_path, 'rb') as f:
             client = pickle.load(f)
+        client.model.to(self.device)
         return client
     
     def save_results(self):

@@ -196,6 +196,7 @@ class PMOE_FedPer(Server):
         # self.rs_test_auc = []
         # self.rs_train_loss = []
         
+        self.load_model() # Load saved model before fine-tuning
         
         for client in self.selected_clients:
             self.fintuned_heads.append(client.model.head)
@@ -211,6 +212,7 @@ class PMOE_FedPer(Server):
             head_list = copy.deepcopy(self.fintuned_heads) 
             client.set_moe_experts(head_list)  # sever send moe experts
             client.moe_finetune()  # clinet moe finetune
+            self.save_global_model() # Save model after each client fine-tunes
             self.evaluate()  # after each client finetune eval 
             index += 1 # self.selected_clients 
         

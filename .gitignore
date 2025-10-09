@@ -1,3 +1,55 @@
-*__pycache__*
+# === Python caches ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
 
-dataset/CIFAR10/cifar-10-python.tar.gz
+# === Jupyter / Colab ===
+*.ipynb_checkpoints/
+*.ipynb_checkpoints
+*.colab-checkpoint
+
+# === Datasets ===
+dataset/**/*.npz
+dataset/**/*.tar.gz
+dataset/**/*.zip
+dataset/**/*.pkl
+dataset/**/*.npy
+dataset/**/*.csv
+
+# If you really want to track small configs or sample data, you can whitelist:
+# !dataset/configs/
+# !dataset/samples/
+
+# === Models & Checkpoints ===
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.h5
+
+# === Logs, Results, and Outputs ===
+logs/
+system/logs/
+results/
+checkpoints/
+outputs/
+runs/
+wandb/
+tensorboard/
+*.log
+*.out
+
+# === Environment / Virtualenv ===
+.env/
+venv/
+.venv/
+env/
+ENV/
+
+# === Misc ===
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+*.swp

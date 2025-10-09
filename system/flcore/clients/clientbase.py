@@ -76,20 +76,24 @@ class Client(object):
         if batch_size == None:
             batch_size = self.batch_size
         train_data = read_client_data(self.dataset, self.id, is_train=True)
-        return DataLoader(train_data, batch_size, drop_last=True, shuffle=True)
+        return DataLoader(train_data, batch_size=batch_size, drop_last=True, shuffle=True)
 
     def load_test_data(self, batch_size=None):
         if batch_size == None:
             batch_size = self.batch_size
         test_data = read_client_data(self.dataset, self.id, is_train=False)
-        return DataLoader(test_data, batch_size, drop_last=False, shuffle=True)
+        return DataLoader(test_data, batch_size=batch_size, drop_last=False, shuffle=True)
         
     def set_parameters(self, model):
         for new_param, old_param in zip(model.parameters(), self.model.parameters()):
+            new_param = new_param.to(self.device, non_blocking=True)
+            old_param = old_param.to(self.device, non_blocking=True)
             old_param.data = new_param.data.clone()
 
     def clone_model(self, model, target):
         for param, target_param in zip(model.parameters(), target.parameters()):
+            param = param.to(self.device, non_blocking=True)
+            target_param = target_param.to(self.device, non_blocking=True)
             target_param.data = param.data.clone()
             # target_param.grad = param.grad.clone()
     
@@ -114,6 +118,8 @@ class Client(object):
 
     def update_parameters(self, model, new_params):
         for param, new_param in zip(model.parameters(), new_params):
+            param = param.to(self.device, non_blocking=True)
+            new_param = new_param.to(self.device, non_blocking=True)
             param.data = new_param.data.clone()
 
     def test_metrics(self):
@@ -122,6 +128,8 @@ class Client(object):
         # self.model.to(self.device)
         self.model.eval()
 
+        
+        self.model.to(self.device)
         test_acc = 0
         test_num = 0
         y_prob = []
@@ -129,6 +137,8 @@ class Client(object):
         
         with torch.no_grad():
             for x, y in testloaderfull:
+                x = x.to(self.device, non_blocking=True)
+                y = y.to(self.device, non_blocking=True)
                 if type(x) == type([]):
                     x[0] = x[0].to(self.device)
                 else:
@@ -164,10 +174,14 @@ class Client(object):
         # self.model.to(self.device)
         self.model.eval()
 
+        
+        self.model.to(self.device)
         train_num = 0
         losses = 0
         with torch.no_grad():
             for x, y in trainloader:
+                x = x.to(self.device, non_blocking=True)
+                y = y.to(self.device, non_blocking=True)
                 if type(x) == type([]):
                     x[0] = x[0].to(self.device)
                 else:

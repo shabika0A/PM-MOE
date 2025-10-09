@@ -60,14 +60,18 @@ class MoE(nn.Module):
 # The original ToPMoE class with EDM (for reference)
 class ToPMoE(nn.Module):
     def __init__(self, trained_experts, gate_input_dim, args):
-        super(ToPMoE, self).__init__()
+        super().__init__()
         self.experts = nn.ModuleList(trained_experts)
-        num_experts = len(trained_experts)
-        # Assuming all experts have the same input dimension
-        self.gating = Gating(gate_input_dim, num_experts)
-        self.k = args.topk
+        self.num_experts = len(self.experts)
         self.args = args
-        self.energy_T=args.energy_T
+        self.energy_T = getattr(args, "energy_T", getattr(args, "energe_T", 1.0))
+
+        # gating network -> logits over experts
+        self.gating = nn.Linear(gate_input_dim, self.num_experts, bias=True)
+
+        # clamp topk to valid range (>=1, <= num_experts)
+        req_topk = int(getattr(args, "topk", 1))
+        self.topk = max(1, min(req_topk, self.num_experts))
 
     def calConfidence(self, normalized_item):
         E_k = -normalized_item
@@ -85,60 +89,40 @@ class ToPMoE(nn.Module):
         cosine_sim = dot_product / (x_norm * y_norm + 1e-8)  
         return cosine_sim
     
-    def forward(self, x): 
-        
-        # Get the weights from the gating network
-        weights = self.gating(x.flatten(1))  # [10,20]
-        
-        weights_values, indices = torch.topk(weights, self.k, dim=-1, largest=True, sorted=True, out=None) 
-        
-        filter_weights_values = []
-        # Calculate the expert
-        results = []
-        for i in range(x.size(0)):
-            expert_results = [self.experts[idx](x[i]) for idx in indices[i]] 
-            
-            rep_ori = self.experts[self.args.id](x[i]) # 10
-            
-            # epsilon = 1e-4
-            
-            # confidence_results = {}
-            energy_index_pairs = []
-            for item ,idx in zip(expert_results, indices[i]):
-                if idx == self.args.id:
-                    cosine_sim = torch.ones_like(rep_ori) 
-                else:
-                    cosine_sim = self.elementwise_cosine_similarity(rep_ori, item) 
-                
-                # Calculate energy value using calConfidence
-                energy_value = self.calConfidence(cosine_sim.unsqueeze(0))  # Pass cosine similarity as input
-                # confidence_results[energy_value.item()] = confidence_results.get(energy_value.item(), []) + [idx]
-                energy_index_pairs.append((energy_value.item(), idx)) 
-                
-            dropout_coefficient = 0.2 
+    def forward(self, rep):
+        """
+        rep: [B, D]
+        Returns: [B, C] (same shape each expert head produces)
+        """
+        if rep.dim() != 2:
+            rep = rep.view(rep.size(0), -1)
 
-            energy_index_pairs.sort(key=lambda x: x[0])
-            
-            num_to_keep = int(len(indices[i]) * (1 - dropout_coefficient))  
-            
-            keep_indices = [pair[1] for pair in energy_index_pairs[:num_to_keep]]
-            
-            keep_positions = [indices[i].tolist().index(idx) for idx in keep_indices]
-            
-            filtered_expert_results = [expert_results[idx] for idx in keep_indices]
-            filtered_weight_list = weights_values[i][keep_positions]
-   
-            filter_weights_values.append(filtered_weight_list)          
-            
-            stacked_expert_results = torch.stack(filtered_expert_results) 
-            results.append(stacked_expert_results)
-            
-        final_results = torch.stack(results)  
-        weights = torch.stack(filter_weights_values)
-        weights_x = weights.unsqueeze(-1).expand_as(final_results)
+        # [B, E]
+        gate_logits = self.gating(rep)
 
-        return torch.sum(final_results * weights_x, dim=1) 
+        # temperature + softmax scores
+        scores = F.softmax(gate_logits / float(self.energy_T), dim=-1)  # [B, E]
 
+        # compute "global" top-k experts (shared across the batch) to avoid
+        # per-sample indexing mismatches and shape gymnastics
+        global_scores = scores.mean(dim=0)            # [E]
+        k = min(self.topk, self.num_experts)          # safety
+        keep = torch.topk(global_scores, k).indices   # [k]
+        keep_list = keep.tolist()
+
+        # run selected experts
+        # Each expert_i(rep): [B, C]
+        expert_outs = [self.experts[i](rep) for i in keep_list]   # list of k tensors [B, C]
+        stacked = torch.stack(expert_outs, dim=1)                 # [B, k, C]
+
+        # gather corresponding per-sample weights and normalize
+        # scores[:, keep] -> [B, k]
+        kept_weights = scores.index_select(dim=1, index=keep)     # [B, k]
+        kept_weights = kept_weights / (kept_weights.sum(dim=1, keepdim=True) + 1e-8)
+
+        # Weighted sum over experts -> [B, C]
+        out = (stacked * kept_weights.unsqueeze(-1)).sum(dim=1)
+        return out
 
 class NormalToPMoE(nn.Module):
     def __init__(self, trained_experts, gate_input_dim, args):

@@ -55,6 +55,9 @@ from flcore.trainmodel.alexnet import *
 from flcore.trainmodel.mobilenet_v2 import *
 from flcore.trainmodel.transformer import *
 
+import torch.nn as nn
+
+
 logger = logging.getLogger()
 logger.setLevel(logging.ERROR)
 
@@ -457,44 +460,33 @@ def run(args):
 
 
 
-
-
 if __name__ == "__main__":
     total_start = time.time()
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("-eT", "--energy_T", type=float, default=1.0, help="Energy temperature for MoE")
+    parser.add_argument("-ucb_c", "--ucb_c", type=float, default=1.0, help="The exploration constant for the UCB algorithm.")
     # general
-    parser.add_argument('-go', "--goal", type=str, default="test", 
-                        help="The goal for this experiment")
-    parser.add_argument('-dev', "--device", type=str, default="cuda",
-                        choices=["cpu", "cuda"])
+    parser.add_argument('-go', "--goal", type=str, default="test", help="The goal for this experiment")
+    parser.add_argument('-dev', "--device", type=str, default="cuda", choices=["cpu", "cuda"])
     parser.add_argument('-did', "--device_id", type=str, default="0")
     parser.add_argument('-data', "--dataset", type=str, default="MNIST")
     parser.add_argument('-nb', "--num_classes", type=int, default=10)
     parser.add_argument('-m', "--model", type=str, default="cnn")
     parser.add_argument('-lbs', "--batch_size", type=int, default=10)
-    parser.add_argument('-lr', "--local_learning_rate", type=float, default=0.005,
-                        help="Local learning rate")
+    parser.add_argument('-lr', "--local_learning_rate", type=float, default=0.005, help="Local learning rate")
     parser.add_argument('-ld', "--learning_rate_decay", type=bool, default=False)
     parser.add_argument('-ldg', "--learning_rate_decay_gamma", type=float, default=0.99)
     parser.add_argument('-gr', "--global_rounds", type=int, default=2000)
-    parser.add_argument('-ls', "--local_epochs", type=int, default=1, 
-                        help="Multiple update steps in one local epoch.")
+    parser.add_argument('-ls', "--local_epochs", type=int, default=1, help="Multiple update steps in one local epoch.")
     parser.add_argument('-algo', "--algorithm", type=str, default="FedAvg")
-    parser.add_argument('-jr', "--join_ratio", type=float, default=1.0,
-                        help="Ratio of clients per round")
-    parser.add_argument('-rjr', "--random_join_ratio", type=bool, default=False,
-                        help="Random ratio of clients per round")
-    parser.add_argument('-nc', "--num_clients", type=int, default=20,
-                        help="Total number of clients")
-    parser.add_argument('-pv', "--prev", type=int, default=0,
-                        help="Previous Running times")
-    parser.add_argument('-t', "--times", type=int, default=1,
-                        help="Running times")
-    parser.add_argument('-eg', "--eval_gap", type=int, default=1,
-                        help="Rounds gap for evaluation")
-    parser.add_argument('-dp', "--privacy", type=bool, default=False,
-                        help="differential privacy")
+    parser.add_argument('-jr', "--join_ratio", type=float, default=1.0, help="Ratio of clients per round")
+    parser.add_argument('-rjr', "--random_join_ratio", type=bool, default=False, help="Random ratio of clients per round")
+    parser.add_argument('-nc', "--num_clients", type=int, default=20, help="Total number of clients")
+    parser.add_argument('-pv', "--prev", type=int, default=0, help="Previous Running times")
+    parser.add_argument('-t', "--times", type=int, default=1, help="Running times")
+    parser.add_argument('-eg', "--eval_gap", type=int, default=1, help="Rounds gap for evaluation")
+    parser.add_argument('-dp', "--privacy", type=bool, default=False, help="differential privacy")
     parser.add_argument('-dps', "--dp_sigma", type=float, default=0.0)
     parser.add_argument('-sfn', "--save_folder_name", type=str, default='items')
     parser.add_argument('-ab', "--auto_break", type=bool, default=False)
@@ -504,30 +496,23 @@ if __name__ == "__main__":
     parser.add_argument('-nnc', "--num_new_clients", type=int, default=0)
     parser.add_argument('-ften', "--fine_tuning_epoch_new", type=int, default=0)
     # practical
-    parser.add_argument('-cdr', "--client_drop_rate", type=float, default=0.0,
-                        help="Rate for clients that train but drop out")
-    parser.add_argument('-tsr', "--train_slow_rate", type=float, default=0.0,
-                        help="The rate for slow clients when training locally")
-    parser.add_argument('-ssr', "--send_slow_rate", type=float, default=0.0,
-                        help="The rate for slow clients when sending global model")
-    parser.add_argument('-ts', "--time_select", type=bool, default=False,
-                        help="Whether to group and select clients at each round according to time cost")
-    parser.add_argument('-tth', "--time_threthold", type=float, default=10000,
-                        help="The threthold for droping slow clients")
-    # pFedMe / PerAvg / FedProx / FedAMP / FedPHP / GPFL
+    parser.add_argument('-cdr', "--client_drop_rate", type=float, default=0.0, help="Rate for clients that train but drop out")
+    parser.add_argument('-tsr', "--train_slow_rate", type=float, default=0.0, help="The rate for slow clients when training locally")
+    parser.add_argument('-ssr', "--send_slow_rate", type=float, default=0.0, help="The rate for slow clients when sending global model")
+    parser.add_argument('-ts', "--time_select", type=bool, default=False, help="Whether to group and select clients at each round according to time cost")
+    parser.add_argument('-tth', "--time_threthold", type=float, default=10000, help="The threthold for droping slow clients")
+    # pFedMe / PerAvg / FedProx / FedAMP / GPFL
     parser.add_argument('-bt', "--beta", type=float, default=0.0)
     parser.add_argument('-lam', "--lamda", type=float, default=1.0, help="Regularization weight")
     parser.add_argument('-mu', "--mu", type=float, default=0.0)
     parser.add_argument('-K', "--K", type=int, default=5, help="Number of personalized training steps for pFedMe")
-    parser.add_argument('-lrp', "--p_learning_rate", type=float, default=0.01,
-                        help="personalized learning rate to caculate theta aproximately using K steps")
+    parser.add_argument('-lrp', "--p_learning_rate", type=float, default=0.01, help="personalized learning rate to caculate theta aproximately using K steps")
     # FedFomo
     parser.add_argument('-M', "--M", type=int, default=5, help="Server only sends M client models to one client at each round")
     # FedMTL
     parser.add_argument('-itk', "--itk", type=int, default=4000, help="The iterations for solving quadratic subproblems")
     # FedAMP
     parser.add_argument('-alk', "--alphaK", type=float, default=1.0, help="lambda/sqrt(GLOABL-ITRATION) according to the paper")
-    
     parser.add_argument('-sg', "--sigma", type=float, default=1.0)
     # APFL
     parser.add_argument('-al', "--alpha", type=float, default=1.0)
@@ -551,8 +536,7 @@ if __name__ == "__main__":
     # FedALA
     parser.add_argument('-et', "--eta", type=float, default=1.0)
     parser.add_argument('-s', "--rand_percent", type=int, default=80)
-    parser.add_argument('-p', "--layer_idx", type=int, default=2,
-                        help="More fine-graind than its original paper.")
+    parser.add_argument('-p', "--layer_idx", type=int, default=2, help="More fine-graind than its original paper.")
     # FedKD
     parser.add_argument('-mlr', "--mentee_learning_rate", type=float, default=0.005)
     parser.add_argument('-Ts', "--T_start", type=float, default=0.95)
@@ -561,14 +545,18 @@ if __name__ == "__main__":
     parser.add_argument('-mo', "--momentum", type=float, default=0.1)
     parser.add_argument('-klw', "--kl_weight", type=float, default=0.0)
     # FedBABUMoE, FedCPMoE
-    parser.add_argument("-mfte","--moe_fine_tuning_epochs",type=int,default=10)
+    parser.add_argument("-mfte", "--moe_fine_tuning_epochs", type=int, default=10)
     parser.add_argument("-tk", "--topk", type=int, default=2)
-    parser.add_argument("-le", "--lock_experts", type=int, default=0) # 0--lock， 1--unlock
-    parser.add_argument("-moelr", "--moe_lr", type=float, default=0.1) # 
-    # Add this line within the argument parsing section
-    parser.add_argument('--ucb_c', type=float, default=1.0, help='The exploration constant for the UCB algorithm.')
-    
+    parser.add_argument("-le", "--lock_experts", type=int, default=0)  # 0--lock, 1--unlock
+    parser.add_argument("-moelr", "--moe_lr", type=float, default=0.1, help="MoE learning rate")
+
     args = parser.parse_args()
+
+    # --- energy_T / energe_T compatibility shim (no indentation bug) ---
+    if hasattr(args, "energe_T") and not hasattr(args, "energy_T"):
+        args.energy_T = args.energe_T
+    elif not hasattr(args, "energy_T"):
+        args.energy_T = 1.0  # sane default
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.device_id
 
@@ -577,58 +565,38 @@ if __name__ == "__main__":
         args.device = "cpu"
 
     print("=" * 50)
-
-    print("Algorithm: {}".format(args.algorithm))
-    print("Local batch size: {}".format(args.batch_size))
-    print("Local epochs: {}".format(args.local_epochs))
-    print("Local learing rate: {}".format(args.local_learning_rate))
-    print("Local learing rate decay: {}".format(args.learning_rate_decay))
+    print(f"Algorithm: {args.algorithm}")
+    print(f"Local batch size: {args.batch_size}")
+    print(f"Local epochs: {args.local_epochs}")
+    print(f"Local learing rate: {args.local_learning_rate}")
+    print(f"Local learing rate decay: {args.learning_rate_decay}")
     if args.learning_rate_decay:
-        print("Local learing rate decay gamma: {}".format(args.learning_rate_decay_gamma))
-    print("Total number of clients: {}".format(args.num_clients))
-    print("Clients join in each round: {}".format(args.join_ratio))
-    print("Clients randomly join: {}".format(args.random_join_ratio))
-    print("Client drop rate: {}".format(args.client_drop_rate))
-    print("Client select regarding time: {}".format(args.time_select))
+        print(f"Local learing rate decay gamma: {args.learning_rate_decay_gamma}")
+    print(f"Total number of clients: {args.num_clients}")
+    print(f"Clients join in each round: {args.join_ratio}")
+    print(f"Clients randomly join: {args.random_join_ratio}")
+    print(f"Client drop rate: {args.client_drop_rate}")
+    print(f"Client select regarding time: {args.time_select}")
     if args.time_select:
-        print("Time threthold: {}".format(args.time_threthold))
-    print("Running times: {}".format(args.times))
-    print("Dataset: {}".format(args.dataset))
-    print("Number of classes: {}".format(args.num_classes))
-    print("Backbone: {}".format(args.model))
-    print("Using device: {}".format(args.device))
-    print("Using DP: {}".format(args.privacy))
+        print(f"Time threthold: {args.time_threthold}")
+    print(f"Running times: {args.times}")
+    print(f"Dataset: {args.dataset}")
+    print(f"Number of classes: {args.num_classes}")
+    print(f"Backbone: {args.model}")
+    print(f"Using device: {args.device}")
+    print(f"Using DP: {args.privacy}")
     if args.privacy:
-        print("Sigma for DP: {}".format(args.dp_sigma))
-    print("Auto break: {}".format(args.auto_break))
+        print(f"Sigma for DP: {args.dp_sigma}")
+    print(f"Auto break: {args.auto_break}")
     if not args.auto_break:
-        print("Global rounds: {}".format(args.global_rounds))
+        print(f"Global rounds: {args.global_rounds}")
     if args.device == "cuda":
-        print("Cuda device id: {}".format(os.environ["CUDA_VISIBLE_DEVICES"]))
-    print("DLG attack: {}".format(args.dlg_eval))
+        print(f"Cuda device id: {os.environ['CUDA_VISIBLE_DEVICES']}")
+    print(f"DLG attack: {args.dlg_eval}")
     if args.dlg_eval:
-        print("DLG attack round gap: {}".format(args.dlg_gap))
-    print("Total number of new clients: {}".format(args.num_new_clients))
-    print("Fine tuning epoches on new clients: {}".format(args.fine_tuning_epoch_new))
+        print(f"DLG attack round gap: {args.dlg_gap}")
+    print(f"Total number of new clients: {args.num_new_clients}")
+    print(f"Fine tuning epoches on new clients: {args.fine_tuning_epoch_new}")
     print("=" * 50)
 
-    # with torch.profiler.profile(
-    #     activities=[
-    #         torch.profiler.ProfilerActivity.CPU,
-    #         torch.profiler.ProfilerActivity.CUDA],
-    #     profile_memory=True, 
-    #     on_trace_ready=torch.profiler.tensorboard_trace_handler('./log')
-    #     ) as prof:
-    # with torch.autograd.profiler.profile(profile_memory=True) as prof:
-    
-    
     run(args)
-    # average_data(dataset=args.dataset, algorithm=args.algorithm, goal=args.goal, times=args.times)
-    
-    # average_data(dataset='Cifar10', algorithm="FedCP", goal=args.goal, times=args.times)
-    
-    
-    
-    
-    
-    
