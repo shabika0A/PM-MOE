@@ -36,7 +36,7 @@ class clientPer(Client):
         trainloader = self.load_train_data()
         start_time = time.time()
 
-        self.model.to(self.device)
+        self.model.to('cpu')
         self.model.train()
 
         max_local_epochs = self.local_epochs
@@ -68,7 +68,7 @@ class clientPer(Client):
         self.train_time_cost["total_cost"] += time.time() - start_time
 
     def set_parameters(self, model):
-        self.model.to(self.device)
+        self.model.to('cpu')
         for new_param, old_param in zip(model.parameters(), self.model.parameters()):
             old_param.data = new_param.data.to(self.device).clone()
 
@@ -86,7 +86,7 @@ class PMOE_clientPer(Client):
         trainloader = self.load_train_data()
         start_time = time.time()
 
-        self.model.to(self.device)
+        self.model.to('cpu')
         self.model.train()
 
         max_local_epochs = self.local_epochs
@@ -118,7 +118,7 @@ class PMOE_clientPer(Client):
         self.train_time_cost["total_cost"] += time.time() - start_time
 
     def set_parameters(self, model):
-        self.model.to(self.device)
+        self.model.to('cpu')
         for new_param, old_param in zip(model.parameters(), self.model.parameters()):
             old_param.data = new_param.data.to(self.device).clone()
 
@@ -132,8 +132,22 @@ class PMOE_clientPer(Client):
         trainloader = self.load_train_data()
         start_time = time.time()
 
-        self.model.to(self.device)
+        self.model.to('cpu')
         self.model.train()
+        # right after self.model.train()
+        self.model.to(self.device)
+
+        def _ensure_model_on_device(m, dev):
+            # fast check; if any param is off-device, move whole model
+            try:
+                pdev = next(m.parameters()).device
+                if str(pdev) != str(dev):
+                    m.to(dev)
+            except StopIteration:
+                m.to(dev)
+        
+        _ensure_model_on_device(self.model, self.device)
+
         self.is_moe_finetune = True
 
         # # attach MoE (top-k) head
@@ -203,7 +217,10 @@ class PMOE_clientPer(Client):
                 # loss.backward()
                 # self.moe_opt.step()
                 # # # # # # # UCB block start
+                _ensure_model_on_device(self.model, self.device)  # ensure not reverted by anything
+
                 rep = self.model.base(x)
+                
                 # 1) Select experts via UCB (returns top-k indices)
                 ucb_indices = self.model.moe.get_ucb_selection(self._ucb_total_plays)
 
@@ -235,8 +252,9 @@ class PMOE_clientPer(Client):
     def test_metrics(self):
         testloader = self.load_test_data()
 
+        self.model.to('cpu')
         self.model.to(self.device)
-        self.model.eval()
+        self.model.eval() # loaded?
 
         test_acc = 0
         test_num = 0
@@ -294,6 +312,7 @@ class PMOE_clientPer(Client):
     def train_metrics(self):
         trainloader = self.load_train_data()
 
+        self.model.to('cpu')
         self.model.to(self.device)
         self.model.eval()
 

@@ -25,6 +25,8 @@ import random
 from utils.data_utils import read_client_data
 from utils.dlg import DLG
 import pickle
+from pathlib import Path
+
 
 class Server(object):
     def __init__(self, args, times):
@@ -194,15 +196,82 @@ class Server(object):
 
         print(f"client {str(client.id)} saved")
 
+
     def load_clients(self, client):
-        model_path = os.path.join("models", self.dataset)
-        model_path = os.path.join(model_path, self.algorithm + "_client_object_" + str(client.id) + ".pkl")
-        assert (os.path.exists(model_path))
-        with open(model_path, 'rb') as f:
-            client = pickle.load(f)
-        client.model.to(self.device)
-        return client
+        """
+        Load a saved client either as a full pickled object (.pkl/.pt/.pth saved via torch.save(obj))
+        or as a plain model state_dict (.pt/.pth). Returns a Client instance with model on self.device.
+        """
+        # Resolve base dir: <repo>/system/models/<DATASET>
+        system_dir = Path(__file__).resolve().parents[2]   # .../PM-MOE-clean/system
+        base_dir = system_dir / "models" / self.dataset
     
+        stem = f"{self.algorithm}_client_object_{client.id}"
+        candidates = [
+            base_dir / f"{stem}.pkl",
+            base_dir / f"{stem}.pt",
+            base_dir / f"{stem}.pth",
+        ]
+        load_path = next((p for p in candidates if p.exists()), None)
+        if load_path is None:
+            raise FileNotFoundError(
+                f"[client-load] No saved client file for id={client.id}. "
+                f"Searched: {', '.join(str(p) for p in candidates)}"
+            )
+    
+        # 1) Try full object via torch.load (works for torch.pickled Clients)
+        try:
+            obj = torch.load(str(load_path), map_location=self.device, weights_only=False)
+            # If this is a Client-like object
+            if hasattr(obj, "model"):
+                obj.model.to(self.device)
+                return obj
+            # Common dict formats
+            if isinstance(obj, dict):
+                if "model_state_dict" in obj and hasattr(client, "model"):
+                    client.model.load_state_dict(obj["model_state_dict"])
+                    client.model.to(self.device)
+                    return client
+                # Direct state_dict
+                try:
+                    client.model.load_state_dict(obj)
+                    client.model.to(self.device)
+                    return client
+                except Exception:
+                    pass
+        except Exception:
+            pass  # fall through to pickle/state_dict paths
+    
+        # 2) If it's a .pkl/.pickle: Python pickle full object or state_dict
+        if load_path.suffix.lower() in (".pkl", ".pickle"):
+            try:
+                with open(load_path, "rb") as fh:
+                    obj = pickle.load(fh)
+                if hasattr(obj, "model"):
+                    obj.model.to(self.device)
+                    return obj
+                if isinstance(obj, dict) and hasattr(client, "model"):
+                    client.model.load_state_dict(obj)
+                    client.model.to(self.device)
+                    return client
+            except Exception as e:
+                raise RuntimeError(
+                    f"[client-load] Failed to load {load_path} via pickle and torch. "
+                    f"Pickle error: {type(e).__name__}: {e}"
+                )
+    
+        # 3) Last attempt: treat file as a pure state_dict
+        try:
+            state = torch.load(str(load_path), map_location=self.device, weights_only=True)
+            client.model.load_state_dict(state)
+            client.model.to(self.device)
+            return client
+        except Exception as e:
+            raise RuntimeError(
+                f"[client-load] {load_path} is not a full client object nor a usable state_dict. "
+                f"Tried torch(full), pickle, torch(state_dict). Last error: {type(e).__name__}: {e}"
+            )
+
     def save_results(self):
         algo = self.dataset + "_" + self.algorithm
         result_path = "../results/"

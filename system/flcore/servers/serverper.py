@@ -119,6 +119,15 @@ class PMOE_FedPer(Server):
         for i in range(len(self.clients)):              # --------please cancel annotate in pmoe finetune --------
             client = self.clients[i]                    # --------please cancel annotate in pmoe finetune --------
             loaded_client = self.load_clients(client)   # --------please cancel annotate in pmoe finetune --------
+            self.clients[i].device = self.device
+            self.clients[i].model.to(self.device)
+            if hasattr(self.clients[i], "optimizer") and self.clients[i].optimizer is not None:
+                # ensure optimizer state tensors (if any) are on the same device
+                for st in self.clients[i].optimizer.state.values():
+                    for k, v in st.items():
+                        if torch.is_tensor(v):
+                            st[k] = v.to(self.device, non_blocking=True)
+
             self.clients[i] = loaded_client             # --------please cancel annotate in pmoe finetune --------
         
         print(f"\nJoin ratio / total clients: {self.join_ratio} / {self.num_clients}")

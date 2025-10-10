@@ -160,8 +160,9 @@ class ExtractorToPMoE(nn.Module):
         self.k = args.topk
         self.args = args
 
-        # UCB selector for expert selection
-        self.ucb_selector = UCBExperts(num_experts=self.num_experts, exploration_constant=args.ucb_c)
+        ucb_c = getattr(args, "ucb_c", 1.0)
+        self.ucb_selector = UCBExperts(num_experts=self.num_experts, exploration_constant=ucb_c)
+
         
         # Gating network is still used for weighting
         self.gating = Gating(gate_input_dim, self.num_experts)
