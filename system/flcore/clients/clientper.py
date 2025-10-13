@@ -36,7 +36,7 @@ class clientPer(Client):
         trainloader = self.load_train_data()
         start_time = time.time()
 
-        self.model.to('cpu')
+        self.model.to(self.device)
         self.model.train()
 
         max_local_epochs = self.local_epochs
@@ -68,7 +68,7 @@ class clientPer(Client):
         self.train_time_cost["total_cost"] += time.time() - start_time
 
     def set_parameters(self, model):
-        self.model.to('cpu')
+        self.model.to(self.device)
         for new_param, old_param in zip(model.parameters(), self.model.parameters()):
             old_param.data = new_param.data.to(self.device).clone()
 
@@ -86,7 +86,7 @@ class PMOE_clientPer(Client):
         trainloader = self.load_train_data()
         start_time = time.time()
 
-        self.model.to('cpu')
+        self.model.to(self.device)
         self.model.train()
 
         max_local_epochs = self.local_epochs
@@ -118,7 +118,7 @@ class PMOE_clientPer(Client):
         self.train_time_cost["total_cost"] += time.time() - start_time
 
     def set_parameters(self, model):
-        self.model.to('cpu')
+        self.model.to(self.device)
         for new_param, old_param in zip(model.parameters(), self.model.parameters()):
             old_param.data = new_param.data.to(self.device).clone()
 
@@ -132,7 +132,7 @@ class PMOE_clientPer(Client):
         trainloader = self.load_train_data()
         start_time = time.time()
 
-        self.model.to('cpu')
+
         self.model.train()
         # right after self.model.train()
         self.model.to(self.device)
@@ -163,6 +163,9 @@ class PMOE_clientPer(Client):
         if getattr(self.args, "topk", 1) > num_experts:
             print(f"[warn] topk={self.args.topk} > num_experts={num_experts}; clamping to {num_experts}")
             self.args.topk = num_experts
+        # make sure expert heads are on the same device before wrapping them
+        for e in self.trained_experts:
+            e.to(self.device)
 
         self.model.moe = ExtractorToPMoE(
             trained_experts=self.trained_experts,
@@ -252,7 +255,7 @@ class PMOE_clientPer(Client):
     def test_metrics(self):
         testloader = self.load_test_data()
 
-        self.model.to('cpu')
+        # self.model.to('cpu')
         self.model.to(self.device)
         self.model.eval() # loaded?
 
@@ -312,7 +315,7 @@ class PMOE_clientPer(Client):
     def train_metrics(self):
         trainloader = self.load_train_data()
 
-        self.model.to('cpu')
+        # self.model.to('cpu')
         self.model.to(self.device)
         self.model.eval()
 
