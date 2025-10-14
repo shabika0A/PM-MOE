@@ -26,6 +26,13 @@ from flcore.clients.clientbase import Client
 #from flcore.trainmodel.moe.moe import ToPMoE
 from flcore.trainmodel.moe.moe import ExtractorToPMoE
 
+try:
+    from system.utils.timecheckpointer import Checkpointer, SaveConfig, TrainProgress
+except ImportError:
+    from utils.timecheckpointer import Checkpointer, SaveConfig, TrainProgress
+
+
+
 
 
 class clientPer(Client):
@@ -33,6 +40,24 @@ class clientPer(Client):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
 
     def train(self):
+        # ---- client time-based autosave ----
+        _cid = getattr(self, 'id', getattr(self, 'name', 'unknown'))
+        _stage = getattr(self.args, 'stage', 'train')
+        _run_name = f"{getattr(self.args, 'exp', 'exp1')}/{_stage}/client_{_cid}"
+        _ckpt = Checkpointer(SaveConfig(
+            ckpt_dir=getattr(self.args, 'ckpt_dir', './checkpoints'),
+            run_name=_run_name,
+            save_every_secs=getattr(self.args, 'save_every_secs', 300),
+            keep_last=3, with_amp=True, verbose=True
+        ))
+        _progress = _ckpt.load(model=self.model,
+                               optimizer=getattr(self, 'optimizer', None),
+                               scheduler=getattr(self, 'scheduler', None),
+                               scaler=getattr(self, 'scaler', None),
+                               map_location='cpu')
+        _start_epoch = getattr(_progress, 'epoch', 0)
+        _skip_batches = max(getattr(_progress, 'batch_idx', -1), -1)
+
         trainloader = self.load_train_data()
         start_time = time.time()
 
@@ -60,6 +85,20 @@ class clientPer(Client):
                 self.optimizer.zero_grad(set_to_none=True)
                 loss.backward()
                 self.optimizer.step()
+                # ---- time-based autosave per batch ----
+                try:
+                    _progress.batch_idx = batch_idx if 'batch_idx' in locals() else getattr(_progress, 'batch_idx', 0) + 1
+                    _progress.global_step = getattr(_progress, 'global_step', 0) + 1
+                    _progress.stage = "client_train"
+                    if _ckpt.should_save():
+                        _ckpt.save(model=self.model,
+                                optimizer=getattr(self, 'optimizer', None),
+                                scheduler=getattr(self, 'scheduler', None),
+                                scaler=getattr(self, 'scaler', None),
+                                progress=_progress,
+                                extra={})
+                except Exception as _e:
+                    pass
 
         if self.learning_rate_decay:
             self.learning_rate_scheduler.step()
@@ -110,6 +149,20 @@ class PMOE_clientPer(Client):
                 self.optimizer.zero_grad(set_to_none=True)
                 loss.backward()
                 self.optimizer.step()
+            # ---- time-based autosave per batch ----
+                try:
+                    _progress.batch_idx = batch_idx if 'batch_idx' in locals() else getattr(_progress, 'batch_idx', 0) + 1
+                    _progress.global_step = getattr(_progress, 'global_step', 0) + 1
+                    _progress.stage = "client_train"
+                    if _ckpt.should_save():
+                        _ckpt.save(model=self.model,
+                                optimizer=getattr(self, 'optimizer', None),
+                                scheduler=getattr(self, 'scheduler', None),
+                                scaler=getattr(self, 'scaler', None),
+                                progress=_progress,
+                                extra={})
+                except Exception as _e:
+                    pass
 
         if self.learning_rate_decay:
             self.learning_rate_scheduler.step()

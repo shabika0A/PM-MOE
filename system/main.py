@@ -72,6 +72,14 @@ from flcore.trainmodel.transformer import *
 
 from utils.result_utils import average_data
 from utils.mem_utils import MemReporter
+from typing import Optional
+
+try:
+    from system.utils.timecheckpointer import Checkpointer, SaveConfig, TrainProgress
+except ImportError:
+    from utils.timecheckpointer import Checkpointer, SaveConfig, TrainProgress
+
+
 
 
 logger = logging.getLogger()
@@ -243,6 +251,20 @@ def run(args):
             args.model.fc = nn.Identity() # 
             args.model = BaseHeadSplit(args.model, args.head)
             server = FedAvg(args, i)
+        # ---- Time-based autosave for server/global state ----
+        _stage_folder = 'pretrain' if args.stage == 'pretrain' else ('finetune' if args.stage == 'finetune' else 'auto')
+        _server_run = f"{args.exp}/server_{_stage_folder}"
+        _server_ckpt_dir = os.path.join(args.ckpt_dir, args.exp, _stage_folder)
+        os.makedirs(_server_ckpt_dir, exist_ok=True)
+        _srv_ckpt = Checkpointer(SaveConfig(ckpt_dir=args.ckpt_dir, run_name=_server_run,
+                                            save_every_secs=args.save_every_secs, keep_last=5, with_amp=True, verbose=True))
+        _srv_prog = _srv_ckpt.load(model=server.model,
+                                optimizer=getattr(server, 'optimizer', None),
+                                scheduler=getattr(server, 'scheduler', None),
+                                scaler=getattr(server, 'scaler', None),
+                                map_location='cpu')
+        if not hasattr(_srv_prog, 'global_step'):
+            _srv_prog.global_step = 0
             
         
         elif args.algorithm == "Local":
@@ -461,7 +483,15 @@ def run(args):
         else:
             raise NotImplementedError
 
-        server.train()
+        server.train()   
+        _srv_prog.global_step += 1
+        if _srv_ckpt.should_save():
+            _srv_ckpt.save(model=server.model,
+                        optimizer=getattr(server, 'optimizer', None),
+                        scheduler=getattr(server, 'scheduler', None),
+                        scaler=getattr(server, 'scaler', None),
+                        progress=_srv_prog,
+                        extra={"hint": "server autosave"})
         server.save_global_model()
 
         time_list.append(time.time()-start)
@@ -487,6 +517,11 @@ if __name__ == "__main__":
     parser.add_argument('-dev', "--device", type=str, default="cuda",
                         choices=["cpu", "cuda"])
     parser.add_argument('-did', "--device_id", type=str, default="0")
+
+    parser.add_argument("--ckpt_dir", type=str, default="./checkpoints", help="Base checkpoints folder")
+    parser.add_argument("--exp", type=str, default="exp1", help="Experiment name for foldering")
+    parser.add_argument("--stage", type=str, default="auto", choices=["auto","pretrain","finetune"], help="Stages to run")
+    parser.add_argument("--save_every_secs", type=int, default=300, help="Time-based autosave in seconds")
     parser.add_argument('-data', "--dataset", type=str, default="MNIST")
     parser.add_argument('-nb', "--num_classes", type=int, default=10)
     parser.add_argument('-m', "--model", type=str, default="cnn")
@@ -587,6 +622,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     
+
+    # Ensure checkpoint-related args exist
+    if not hasattr(args, 'ckpt_dir'): setattr(args, 'ckpt_dir', './checkpoints')
+    if not hasattr(args, 'exp'): setattr(args, 'exp', 'exp1')
+    if not hasattr(args, 'save_every_secs'): setattr(args, 'save_every_secs', 300)
 # ##__cc_num_classes_hook__
 try:
     if getattr(args, 'data', '').upper() == 'CIFAR10':
