@@ -18,7 +18,7 @@
 import numpy as np
 import time
 from flcore.clients.clientbase import Client
-from flcore.trainmodel.moe.moe import ToPMoE, ExtractorToPMoE, UCBExperts
+from flcore.trainmodel.moe.moe import ExtractorToPMoE
 import torch
 from sklearn import metrics
 from sklearn.preprocessing import label_binarize
@@ -29,14 +29,6 @@ class clientFedMoE(Client):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
         self.args = args
         self.model.local_extra = copy.deepcopy(self.model.base)
-        self.trained_experts = []
-        self.trained_experts.append(self.model.local_extra)
-        self.trained_experts.append(self.model.base)
-        
-        # Initialize UCBExperts with the number of available experts
-        num_experts = len(self.trained_experts)
-        self.ucb_selector = UCBExperts(num_experts=num_experts, exploration_constant=self.args.ucb_c)
-        self.total_rounds_trained = 0
         
 
     def train(self):
@@ -51,6 +43,10 @@ class clientFedMoE(Client):
         if self.train_slow:
             max_local_epochs = np.random.randint(1, max_local_epochs // 2)
             
+        # reset experts
+        self.trained_experts = []
+        self.trained_experts.append(self.model.local_extra)
+        self.trained_experts.append(self.model.base)
         
         if self.dataset == "AGNews":
             self.model.moe = ExtractorToPMoE(trained_experts = self.trained_experts,
@@ -73,27 +69,18 @@ class clientFedMoE(Client):
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
                 
-                # Select top-k experts using the UCB logic
-                selected_expert_indices = self.ucb_selector.select_experts(self.args.topk, self.total_rounds_trained + 1)
-
                 if self.dataset == "AGNews":
                     text, text_lengths = x
                     emb = self.model.base.embedding(text)
-                    rep = self.model.moe(emb.mean(1), selected_expert_indices)
+                    rep = self.model.moe(emb.mean(1))
                 else:
-                    rep = self.model.moe(x, selected_expert_indices)
+                    rep = self.model.moe(x)
                     
                 output = self.model.head(rep)
                 loss = self.loss(output, y)
                 self.moe_opt.zero_grad()
                 loss.backward()
                 self.moe_opt.step()
-                
-                # Calculate the reward as the negative loss and update UCB state
-                reward = -loss.item()
-                self.ucb_selector.update_state(selected_expert_indices, [reward] * self.args.topk)
-            self.total_rounds_trained += 1
-
 
         # self.model.cpu()
 
@@ -106,3 +93,6 @@ class clientFedMoE(Client):
     def set_parameters(self, model):
         for new_param, old_param in zip(model.parameters(), self.model.base.parameters()):
             old_param.data = new_param.data.clone()
+
+
+  
